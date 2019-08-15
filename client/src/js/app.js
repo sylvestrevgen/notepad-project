@@ -61,13 +61,13 @@ const handleFormSubmit = async event => {
       storage.remove("new-note-body");
       domRefs.form.reset();
       domRefs.form.removeAttribute("data-edited-note-id");
-      
+
       // SORTING
       const sortedNotes = sortNotes(notepad.notes);
       //
       const markup = createNoteListItems(sortedNotes);
       domRefs.noteList.innerHTML = markup;
-        // NOTYF
+      // NOTYF
       notyf.success(`${NOTIFICATION_MESSAGES.NOTE_EDITED_SUCCESS}`);
       // MICROMODAL
       MicroModal.close("note-editor-modal");
@@ -129,6 +129,15 @@ const handleFilterNotes = event => {
 
 const handleOpenModal = () => {
   domRefs.form.reset();
+  // RENDER FORM VALUES WITH STORAGE DATA
+  const storageNoteTitle = storage.load("new-note-title");
+  const storageNoteBody = storage.load("new-note-body");
+
+  if (storageNoteTitle || storageNoteBody) {
+    domRefs.form.elements[0].value = storageNoteTitle;
+    domRefs.form.elements[1].value = storageNoteBody;
+  }
+
   select.setSelected(0);
 
   MicroModal.show("note-editor-modal");
@@ -250,12 +259,3 @@ notepad
   .catch(error => {
     notyf.error(`${error}`);
   });
-
-// RENDER FORM VALUES WITH STORAGE DATA
-const storageNoteTitle = storage.load("new-note-title");
-const storageNoteBody = storage.load("new-note-body");
-
-if (storageNoteTitle || storageNoteBody) {
-  domRefs.form.elements[0].value = storageNoteTitle;
-  domRefs.form.elements[1].value = storageNoteBody;
-}
